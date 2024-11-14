@@ -1,0 +1,95 @@
+<% layout("/layouts/boilerplate.ejs")%>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Add New Product</h2>
+
+            <form action="/addproduct" method="POST">
+                <!-- Brand -->
+                <div class="form-group">
+                    <label for="brand" class="font-weight-bold">Brand</label>
+                    <input type="text" class="form-control shadow-sm" id="brand" name="brand" placeholder="Enter brand name" required>
+                </div>
+
+                <!-- Product Name -->
+                <div class="form-group">
+                    <label for="productname" class="font-weight-bold">Product Name</label>
+                    <input type="text" class="form-control shadow-sm" id="productname" name="productname" placeholder="Enter product name" required>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description" class="font-weight-bold">Description</label>
+                    <textarea class="form-control shadow-sm" id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="price" class="font-weight-bold">Price (₹)</label>
+                    <input type="number" class="form-control shadow-sm" id="price" name="price" placeholder="Enter product price" required>
+                </div>
+
+                <!-- Image URL -->
+                <div class="form-group">
+                    <label for="imageUrl" class="font-weight-bold">Image URL</label>
+                    <input type="url" class="form-control shadow-sm" id="image" name="image" placeholder="Enter image URL" required>
+                </div>
+
+                <!-- Submit & Reset Buttons -->
+                <div class="d-flex justify-content-between">
+                    <button type="reset" class="btn btn-light border shadow-sm">Reset</button>
+                    <button type="submit" class="btn btn-primary shadow-sm">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f7f7f7;
+    }
+
+    h2 {
+        font-weight: bold;
+        color: #333;
+    }
+
+    form {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+        color: #333;
+    }
+
+    input[type="text"], input[type="number"], input[type="url"], textarea {
+        border: 1px solid #ccc;
+        transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, input[type="url"]:focus, textarea:focus {
+        border-color: #007bff;
+    }
+
+    .btn {
+        width: 48%;
+    }
+
+    .btn-primary {
+        background-color: #ff3f6c;
+        border-color: #ff3f6c;
+    }
+
+    .btn-primary:hover {
+        background-color: #e53658;
+        border-color: #e53658;
+    }
+
+    .btn-light:hover {
+        background-color: #f0f0f0;
+    }
+</style>

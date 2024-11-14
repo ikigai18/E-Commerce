@@ -1,0 +1,83 @@
+<% layout("/layouts/boilerplate.ejs")%>
+
+<h2 class="text-center mb-5">Dennis Lingo Products</h2>
+        
+        <div class="row">
+            <%  for(product of products){ %>
+                <div class="col-md-4 mb-4">
+                    <div class="product-card card" >
+                        <img src=<%=product.image%> alt="productname" class="product-image">
+                        <div class="product-info">
+                            <h5 class="product-name"><%= product.productname %></h5>
+                            <p class="product-price">₹<%= product.price %></p>
+                            <p><strong>Brand:</strong> <%= product.brand %></p>
+                            <a href="/product/<%= product._id %>" class="btn-view mt-3">View Details</a>
+                            <form action="/product/<%= product.id %>?_method=DELETE" method="POST">
+                                <button type="submit" class="btn-delete mt-3">Delete Product</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }%>
+        </div>
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .product-card {
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                transition: transform 0.3s ease;
+            }
+            .product-card:hover {
+                transform: translateY(-5px);
+            }
+            .product-image {
+                height: 700px;
+                width: 100%;
+                object-fit: cover;
+            }
+            .product-info {
+                padding: 15px;
+            }
+            .product-name {
+                font-weight: bold;
+                color: #333;
+            }
+            .product-description {
+                color: #777;
+            }
+            .product-price {
+                font-size: 18px;
+                font-weight: bold;
+                color: #ff3f6c;
+            }
+            .container {
+                padding: 50px 0;
+            }
+            .btn-delete {
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+            .btn-delete:hover {
+                background-color: #c82333;
+            }
+            .btn-view {
+                background-color: #000000;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                font-size: 14px;
+                cursor: pointer;
+                text-decoration: none;
+        }
+        .btn-view:hover {
+            background-color: #212121;
+            text-decoration: none;
+        }
+        </style>    

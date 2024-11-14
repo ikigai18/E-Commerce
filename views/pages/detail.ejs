@@ -1,0 +1,170 @@
+<% layout("/layouts/boilerplate.ejs")%>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="product-detail-card">
+                <div class="product-image-wrapper">
+                    <img src=<%= product.image%>alt=<%= product.productname %> class="product-image img-fluid">
+                </div>
+                <div class="product-info mt-4">
+                    <!-- Brand -->
+                    <h2 class="product-brand font-weight-bold"><%= product.brand %></h2>
+
+                    <!-- Product Name -->
+                    <h3 class="product-name text-primary"><%= product.productname %></h3>
+
+                    <!-- Description -->
+                    <p class="product-description mt-3"><%= product.description %></p>
+
+                    <!-- Price -->
+                    <h4 class="product-price">₹<%= product.price %></h4>
+
+                    <!-- Back to Products Button -->
+                    <a href="/products" class="btn-back mt-4 d-block text-center">Back to Products</a>
+                </div>
+            </div>
+
+            <!-- Review Submission Section -->
+            <div class="review-section mt-5">
+                <h4 class="font-weight-bold mb-3">Submit Your Review</h4>
+
+                <form action="/product/<%= product._id %>/reviews" method="POST">
+                    <!-- Comment -->
+                    <div class="form-group">
+                        <label for="comment">Your Comment</label>
+                        <textarea class="form-control shadow-sm" id="comment" name="comment" rows="4" placeholder="Write your review here" required></textarea>
+                    </div>
+
+                    <!-- Rating (Bootstrap Slider) -->
+                    <div class="form-group">
+                        <label for="rating">Rating (1 to 5)</label>
+                        <input type="range" class="custom-range" id="rating" name="rating" min="1" max="5" step="1" value="3" oninput="updateSliderValue(this.value)">
+                        <div class="d-flex justify-content-between mt-2">
+                            <span>1</span>
+                            <span id="sliderValue" class="font-weight-bold">3</span>
+                            <span>5</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary shadow-sm">Submit Review</button>
+                </form>
+            </div>
+
+            <!-- Review Display Section -->
+            <div class="review-display-section mt-5">
+                <h4 class="font-weight-bold">Customer Reviews</h4>
+                <% for(review of product.reviews) { %>
+                    <ul class="list-group mt-3">
+                            <li class="list-group-item">
+                                <p><strong>Comment:</strong> <%= review.comment %></p>
+                                <p><strong>Rating:</strong> <%= review.rating %> / 5</p>
+                                <form action="/product/<%= product._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST" class="ml-auto">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </li>
+                    </ul>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    function updateSliderValue(value) {
+        document.getElementById("sliderValue").textContent = value;
+    }
+</script>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .product-detail-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .product-image-wrapper {
+        display: flex;
+        justify-content: center;
+    }
+
+    .product-image {
+        max-height: 700px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .product-info {
+        padding: 20px;
+    }
+
+    .product-brand {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .product-name {
+        font-size: 20px;
+        margin-top: 10px;
+        color: #007bff;
+    }
+
+    .product-description {
+        font-size: 16px;
+        color: #555;
+    }
+
+    .product-price {
+        font-size: 22px;
+        color: #ff3f6c;
+        margin-top: 10px;
+    }
+
+    .btn-back {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-back:hover {
+        background-color: #0056b3;
+    }
+
+    .review-section {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 15px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .list-group-item p {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .list-group-item strong {
+        font-weight: bold;
+    }
+
+    #sliderValue {
+        color: #007bff;
+    }
+</style>
