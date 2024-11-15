@@ -1,0 +1,21 @@
+<% layout("/layouts/boilerplate.ejs") %>
+    <h1 class="mb-4">Your History</h1>
+    <div class="row">
+    <% for (item of history) { %> 
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <form action="/history/<%= item._id %>?_method=DELETE" method ="POST" class="position-absolute top-0 end-0 m-2">
+                            <button type="submit" class="btn btn-danger btn-sm" style="cursor: pointer;">&times;</button>
+                        </form>
+                        <img src="<%= item.store.image %>" class="card-img-top" alt="<%= item.store.brand %>">
+                        <div class="card-body">
+
+                            <h5 class="card-title"><%= item.store.productname %></h5>
+                            <p class="card-text"><%= item.store.description %></p>
+                            <p class="card-text"><strong>Viewed on: </strong><%= item.time.toLocaleDateString() %></p>
+                            <a href="/product/<%= item.store._id %>" class="btn btn-primary">View Product</a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>

@@ -23,7 +23,7 @@ const passport=require('passport');
 const LocalStratergy=require('passport-local');
 const User = require("./models/user.js");
 const user_router = require("./routes/authentication.js");
-
+const History = require("./models/history.js");
 main().then(()=>{console.log("Connection Successful")}).catch(err=>{console.log(err)})
 async function main() { await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");}
 
@@ -48,6 +48,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
+    res.locals.error=req.flash("error");
     next();
 })
 
@@ -59,6 +60,15 @@ app.use("/user",user_router);
 app.get("/",(req,res)=>{
     res.render("./pages/home.ejs");
 })
+app.get("/history",wrapAsync(async(req,res,next)=>{
+    let history = await History.find({}).populate("store");
+    res.render("./pages/history.ejs",{history});
+}))
+app.delete("/history/:id",wrapAsync(async(req,res,next)=>{
+    let {id}=req.params;
+   await History.findByIdAndDelete(id);
+    res.redirect("/history");
+}))
 app.get("/products",wrapAsync(async(req,res)=>{
     let products = await Product.find({});
     res.render("./pages/products.ejs",{products});
@@ -72,7 +82,6 @@ app.use((err,req,res,next)=>{
     req.flash("error",message);
     res.redirect("/")
 })
-
 app.listen(port,()=>{
     console.log("Listening...");
 })

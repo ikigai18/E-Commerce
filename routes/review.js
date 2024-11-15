@@ -19,7 +19,7 @@ const reviewhandler = (req,res,next)=>{
 router.post("/",reviewhandler,wrapAsync(async(req,res,next)=>{
     let {id}=req.params;
     let reviewuser = new Review(req.body);
-    let product = await Product.findById(id);
+    let product = await Product.findById(id).populate("reviews");
     product.reviews.push(reviewuser);
     await reviewuser.save();
     await product.save();
