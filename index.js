@@ -24,6 +24,7 @@ const LocalStratergy=require('passport-local');
 const User = require("./models/user.js");
 const user_router = require("./routes/authentication.js");
 const History = require("./models/history.js");
+const history_router=require("./routes/history.js");
 main().then(()=>{console.log("Connection Successful")}).catch(err=>{console.log(err)})
 async function main() { await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");}
 
@@ -49,6 +50,7 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req,res,next)=>{
     res.locals.success = req.flash("success");
     res.locals.error=req.flash("error");
+    res.locals.currentUser=req.user;
     next();
 })
 
@@ -56,24 +58,25 @@ app.use("/addproduct",addproduct);
 app.use("/product",product);
 app.use("/product/:id/reviews",review);
 app.use("/user",user_router); 
+app.use("/history",history_router); 
 
 app.get("/",(req,res)=>{
     res.render("./pages/home.ejs");
 })
-app.get("/history",wrapAsync(async(req,res,next)=>{
-    let history = await History.find({}).populate("store");
-    res.render("./pages/history.ejs",{history});
-}))
-app.delete("/history/:id",wrapAsync(async(req,res,next)=>{
-    let {id}=req.params;
-   await History.findByIdAndDelete(id);
-    res.redirect("/history");
-}))
+
 app.get("/products",wrapAsync(async(req,res)=>{
     let products = await Product.find({});
     res.render("./pages/products.ejs",{products});
 }))
-
+app.get("/user/logout",(req,res,next)=>{
+    req.logout((err)=>{
+        if(err){
+            return next(err);
+        }
+        req.flash("success","Successfully Logged Out");
+        res.redirect("/user/login");
+    });
+})
 app.all("*",(req,res,next)=>{
     next(new ExpressError(404,"Page Not Found!"));
 })

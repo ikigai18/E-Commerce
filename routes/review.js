@@ -6,6 +6,7 @@ const Product = require("../models/product.js");
 const ExpressError = require("../utils/ExpressError.js");
 const reviewvalidateschema = require("../reviewvalidate.js");
 const Review = require("../models/review.js");
+const {loggedin} = require('../middlewares/isloggedin.js');
 
 const reviewhandler = (req,res,next)=>{
     let {error} = reviewvalidateschema.validate(req.body);
@@ -26,7 +27,7 @@ router.post("/",reviewhandler,wrapAsync(async(req,res,next)=>{
     req.flash("success","SuccesFully Reviewed");
     res.redirect(`/product/${id}`);
 }))
-router.delete("/:rid",async(req,res)=>{
+router.delete("/:rid",loggedin,async(req,res)=>{
     let {id,rid}=req.params;
     //child delete before parent delete
     await Product.findByIdAndUpdate(id,{$pull : {reviews:rid}});//use for pull whole object from parent schema
