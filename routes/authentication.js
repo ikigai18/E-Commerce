@@ -15,14 +15,19 @@ router.post("/signup",wrapAsync(async(req,res,next)=>{
     let{email,username,password}=req.body;
     const newuser = new User({email,username});
     const registereduser =await User.register(newuser,password);
-    req.flash("success","Successfully Logged in");
-    res.redirect("/user/login");
+    req.login(registereduser,err=>{
+        if(err){
+            return next(err);
+        }
+        req.flash("success","Successfully Logged in");
+        res.redirect("/");
+    })
    
 }))
 router.post('/login',saveredirect,
     passport.authenticate('local', { failureRedirect: '/login' }),
     (req, res,next)=>{
         req.flash("success","Successfully Logged in");
-        res.redirect(res.locals.redirect || "/");
+        res.redirect((res.locals.redirectUrl || '/'));
 })
 module.exports=router;

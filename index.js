@@ -25,6 +25,8 @@ const User = require("./models/user.js");
 const user_router = require("./routes/authentication.js");
 const History = require("./models/history.js");
 const history_router=require("./routes/history.js");
+const { loggedin } = require("./middlewares/isloggedin.js");
+const Mute = require("./models/mute.js");
 main().then(()=>{console.log("Connection Successful")}).catch(err=>{console.log(err)})
 async function main() { await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");}
 
@@ -64,9 +66,13 @@ app.get("/",(req,res)=>{
     res.render("./pages/home.ejs");
 })
 
-app.get("/products",wrapAsync(async(req,res)=>{
-    let products = await Product.find({});
-    res.render("./pages/products.ejs",{products});
+app.get("/products",loggedin,wrapAsync(async(req,res)=>{
+    let muteproduct = await Mute.find({user:req.user._id}).populate("mutedproduct");
+    let muted_id = muteproduct[0].mutedproduct.map(product => product._id);
+
+    let products = await Product.find({_id : {$nin : muted_id}});
+    const muted = muteproduct[0].mutedproduct;
+    res.render("./pages/products.ejs",{products,muted});
 }))
 app.get("/user/logout",(req,res,next)=>{
     req.logout((err)=>{
@@ -77,9 +83,40 @@ app.get("/user/logout",(req,res,next)=>{
         res.redirect("/user/login");
     });
 })
-app.all("*",(req,res,next)=>{
-    next(new ExpressError(404,"Page Not Found!"));
-})
+app.get("/product/mute/:id",loggedin,wrapAsync(async(req,res,next)=>{
+        let {id}=req.params;
+        let product = await Product.findById(id);
+        const mute = await Mute.findOne({user:req.user._id});
+        if(mute==null){
+            const newmute = new Mute({user:req.user._id,mutedproduct:[product]});
+            await newmute.save();
+        }
+        else {
+            const ismute=mute.mutedproduct.some(mutedProductId => mutedProductId === id);
+            if(!ismute){
+            mute.mutedproduct.push(id);
+            await mute.save();
+        }
+        }
+        res.redirect("/products");
+    }
+))
+app.get("/product/unmute/:id",loggedin,wrapAsync(async(req,res,next)=>{
+    let {id}=req.params;
+    let product = await Product.findById(id);
+    const mute = await Mute.findOne({user:req.user._id});
+    if(mute!=null){
+        const ismute=mute.mutedproduct.some(mutedProductId => mutedProductId.equals(product._id));
+        if(ismute){
+        mute.mutedproduct = mute.mutedproduct.filter(mutedProductId => mutedProductId != id);
+        await mute.save();
+    }
+    }
+    res.redirect("/products");    
+}))
+// app.all("*",(req,res,next)=>{
+//     next(new ExpressError(404,"Page Not Found!"));
+// })
 app.use((err,req,res,next)=>{
     let {statusCode=500,message="Something Went Wrong"}=err;
     req.flash("error",message);

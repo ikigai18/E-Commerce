@@ -1,13 +1,15 @@
 const mongoose = require("mongoose");
+const Product = require("./product.js");
 const Schema = mongoose.Schema;
 
-new muteschema = new Schema({
+const muteschema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
         ref: "User",
     },
-    mutedurl : [{
-        type: String,
+    mutedproduct : [{
+        type: Schema.Types.ObjectId,
+        ref: "Product",
         required: true
     },]
 })

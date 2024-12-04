@@ -15,6 +15,34 @@
                             <form action="/product/<%= product.id %>?_method=DELETE" method="POST">
                                 <button type="submit" class="btn-delete mt-3">Delete Product</button>
                             </form>
+                            <br>
+                            <form action="/product/mute/<%= product.id %>" method="GET">
+                                <button class="btn btn-sm btn-outline-secondary mute-button" data-post-id="1">
+                                    <i class="bi bi-bell"></i>Mute
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            <% }%>
+            <%  for(product of muted){ %>
+                <div class="col-md-4 mb-4">
+                    <div class="product-card card" >
+                        <img src=<%=product.image%> alt="productname" class="product-image">
+                        <div class="product-info">
+                            <h5 class="product-name"><%= product.productname %></h5>
+                            <p class="product-price">₹<%= product.price %></p>
+                            <p><strong>Brand:</strong> <%= product.brand %></p>
+                            <a href="/products" class="btn-view mt-3">View Details</a>
+                            <form action="/products">
+                                <button type="submit" class="btn-delete mt-3">Delete Product</button>
+                            </form>
+                            <br>
+                            <form action="/product/unmute/<%= product.id %>">
+                                <button class="btn btn-sm btn-outline-secondary mute-button" data-post-id="1">
+                                    <i class="bi bi-bell"></i>UnMute
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

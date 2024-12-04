@@ -6,8 +6,6 @@ const History=require("../models/history.js");
 const {loggedin} = require('../middlewares/isloggedin.js');
 router.get("/:id",wrapAsync(async(req,res)=>{
     let {id} = req.params;
-    let product = await Product.findById(id);
-    let history = await History.findById(id);
     await History.findByIdAndDelete(id);
     const historysave = new History({store:id});
     await historysave.save();
